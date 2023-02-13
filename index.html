@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>Get quotes from OpenAI</title>
+    <style>
+      #container {
+        margin: 100px;
+        text-align: center;
+      }
+
+      #response {
+        margin: 20px auto;
+        width: 500px;
+        height: 200px;
+        border: 2px solid black;
+        color: darkgreen;
+        font-size: 20px;
+      }
+
+      #make-request {
+        padding: 10px;
+        color: darkgreen;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="response"></div>
+      <button id="make-request">Get quote</button>
+    </div>
+    <script>
+      // The prompt we send to OpenAI; can be enhanced to help train the AI and shape a persona.
+      const myPrompt = `Tell me a famous quote`;
+
+      // The configuration for the API request to OpenAI
+      const openAiConfig = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${myToken}`
+        },
+        body: JSON.stringify({
+          model: 'text-davinci-003',
+          prompt: myPrompt,
+          temperature: 0.9,
+          max_tokens: 256,
+        })
+      }
+
+      // Here we store our reference to the button element defined in the <body>
+      const button = document.querySelector('#make-request');
+
+      /**
+       * Here we create & attach to the button the event listener and
+       * the logic of the event itself for making the request and handling the response
+       */
+
+      button.addEventListener('click', () => {
+        fetch('https://api.openai.com/v1/completions', openAiConfig)
+          .then(response => response.json())
+          .then(data => {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerText = data.choices[0].text;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+
+    </script>
+  </body>
+
+</html>
